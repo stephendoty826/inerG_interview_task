@@ -21,15 +21,19 @@ function Map() {
     zoom: 3.88
   })
 
+
   useEffect(() => {
     if(stateData !== undefined){
-      setViewport({
-        latitude: latLongData.filter(stateObj=>stateObj.state === stateData.state)[0].latitude,
-        longitude: latLongData.filter(stateObj=>stateObj.state === stateData.state)[0].longitude,
+      const markerData = latLongData.filter(stateObj=>stateObj.state === stateData.state)[0]
+      if(markerData){
+        setViewport({
+        latitude: markerData.latitude,
+        longitude: markerData.longitude,
         width: "90vw",
         height: "80vh",
         zoom: 6
       })
+      }
     }
   }, [stateData])
 
