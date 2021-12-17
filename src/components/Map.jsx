@@ -1,7 +1,8 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import ReactMapGL from 'react-map-gl';
+import ReactMapGL, { Marker, Popup } from 'react-map-gl';
+import latLongData from '../assets/latLongData';
 
 function Map() {
 
@@ -9,6 +10,7 @@ function Map() {
   const apiKey = "pk.eyJ1Ijoic3RlcGhlbmRvdHk4MjYiLCJhIjoiY2t4NnE2cWY1Mm15MDJwbzY4aXg1dnRvbiJ9.ZjA9CSq0_bt-fbEtHo1MrA"
 
   const data = useSelector(state => state.data)
+  const [selectedState, setSelectedState] = useState(null)
 
   const [viewport, setViewport] = useState({
     latitude: 38.4,
@@ -18,10 +20,45 @@ function Map() {
     zoom: 3.88
   })
 
+  useEffect(() => {
+    const listener = (e)=>{
+      if(e.key === "Escape"){
+        setSelectedState(null)
+      }
+    }
+    window.addEventListener("keydown", listener)
+
+    return ()=>{
+      window.removeEventListener("keydown", listener)
+    }
+  }, [])
+
   return (
     <div className="container-fluid d-flex justify-content-center">
-            <ReactMapGL {...viewport} mapboxApiAccessToken={apiKey} onViewportChange={viewport=>{setViewport(viewport)}} mapStyle="mapbox://styles/stephendoty826/ckx6yv1f62q3g14ntv3vdlo8i">
-
+      <ReactMapGL {...viewport} mapboxApiAccessToken={apiKey} onViewportChange={viewport=>{setViewport(viewport)}} mapStyle="mapbox://styles/stephendoty826/ckx6yv1f62q3g14ntv3vdlo8i">
+        {latLongData.map(stateObj=>{
+          return(
+            <Marker key={stateObj.state} longitude={stateObj.longitude} latitude={stateObj.latitude}> 
+              <button className="marker-btn" onClick={()=>setSelectedState(stateObj)}>
+                <img src="/virus.png" alt="virus icon" />
+              </button>
+            </Marker>
+          )
+        })}
+        {selectedState 
+        ?
+          <Popup longitude={selectedState.longitude} latitude={selectedState.latitude} onClose={()=>setSelectedState(null)}>
+            <div className="m-2">
+              <h3>{data.filter(stateObj=>stateObj.state === selectedState.state)[0].state}</h3>
+              <h5>Total Cases: {data.filter(stateObj=>stateObj.state === selectedState.state)[0].cases}</h5>
+              <h5>Active Cases: {data.filter(stateObj=>stateObj.state === selectedState.state)[0].active}</h5>
+              <h5>Recovered: {data.filter(stateObj=>stateObj.state === selectedState.state)[0].recovered}</h5>
+              <h5>Deaths: {data.filter(stateObj=>stateObj.state === selectedState.state)[0].deaths}</h5>
+            </div>
+          </Popup>
+        :
+          null
+        }
       </ReactMapGL>
     </div>
   )
