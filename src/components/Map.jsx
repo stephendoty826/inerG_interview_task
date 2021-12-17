@@ -6,11 +6,12 @@ import latLongData from '../assets/latLongData';
 
 function Map() {
 
-  //mapbox apikey
+  //mapbox API key
   const apiKey = "pk.eyJ1Ijoic3RlcGhlbmRvdHk4MjYiLCJhIjoiY2t4NnE2cWY1Mm15MDJwbzY4aXg1dnRvbiJ9.ZjA9CSq0_bt-fbEtHo1MrA"
 
   const data = useSelector(state => state.data)
   const [selectedState, setSelectedState] = useState(null)
+  const stateData = useSelector(state => state.stateData)
 
   const [viewport, setViewport] = useState({
     latitude: 38.4,
@@ -19,6 +20,18 @@ function Map() {
     height: "80vh",
     zoom: 3.88
   })
+
+  useEffect(() => {
+    if(stateData !== undefined){
+      setViewport({
+        latitude: latLongData.filter(stateObj=>stateObj.state === stateData.state)[0].latitude,
+        longitude: latLongData.filter(stateObj=>stateObj.state === stateData.state)[0].longitude,
+        width: "90vw",
+        height: "80vh",
+        zoom: 6
+      })
+    }
+  }, [stateData])
 
   useEffect(() => {
     const listener = (e)=>{
