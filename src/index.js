@@ -5,12 +5,14 @@ import reduxThunk from "redux-thunk"
 import {Provider} from 'react-redux'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import BaseLayout from "./components/layout/BaseLayout"
-import reducer from "./reducers"
+import reducer from "./reducers/reducer"
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 import App from './App'
-import Sample from "./components/Sample"
+import BarChart from "./components/BarChart"
+import PieChart from './components/PieChart'
+import Map from './components/Map'
 
 // const saveToLocalStorage = (reduxGlobalState) => {
 
@@ -59,7 +61,9 @@ ReactDOM.render(
         <BaseLayout>
           <Routes>
             <Route path="/" element={<App />} />
-            <Route path="/sample" element={<Sample />} />
+            <Route path="/bar-chart" element={<BarChart />} />
+            <Route path="/pie-chart" element={<PieChart />} />
+            <Route path="/map" element={<Map />} />
           </Routes>
         </BaseLayout>
       </Router>
